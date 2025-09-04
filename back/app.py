@@ -29,55 +29,54 @@ out skel qt;
     else:
         return {}
 
-@app.route("/spots")
-def spots():
-    result = api.query("""
+@app.route("/spots/<north>/<east>/<south>/<west>")
+def spots(north,east,south,west):
+    sports_query ="""
 [out:json]
 [timeout:30]
 ;
 (
   node
     ["tourism"="museum"]
-    48.84393214092,
-     2.3385652297246,
-    48.855115166742,
-     2.3594666277899);
+    (SOUTH,WEST,NORTH,EAST);
   node
     ["leisure"="park"]
-    (48.84393214092,2.3385652297246,48.855115166742,2.3594666277899);
+    (SOUTH,WEST,NORTH,EAST);
   node
     ["leisure"="garden"]
-    (48.84393214092,2.3385652297246,48.855115166742,2.3594666277899);
+    (SOUTH,WEST,NORTH,EAST);
   node
     ["amenity"="public_building"]
-    (48.84393214092,2.3385652297246,48.855115166742,2.3594666277899);
+    (SOUTH,WEST,NORTH,EAST);
   node
     ["historic"]
-    (48.84393214092,2.3385652297246,48.855115166742,2.3594666277899);
+    (SOUTH,WEST,NORTH,EAST);
   node
     ["man_made"="tower"]
-    (48.84393214092,2.3385652297246,48.855115166742,2.3594666277899);
+    (SOUTH,WEST,NORTH,EAST);
   node
     ["man_made"="monument"]
-    (48.84393214092,2.3385652297246,48.855115166742,2.3594666277899);
+    (SOUTH,WEST,NORTH,EAST);
   node
     ["amenity"="place_of_worship"]
-    (48.84393214092,2.3385652297246,48.855115166742,2.3594666277899);
+    (SOUTH,WEST,NORTH,EAST);
   node
     ["amenity"="concert_hall"]
-    (48.84393214092,2.3385652297246,48.855115166742,2.3594666277899);
+    (SOUTH,WEST,NORTH,EAST);
   node
     ["tourism"="viewpoint"]
-    (48.84393214092,2.3385652297246,48.855115166742,2.3594666277899);
+    (SOUTH,WEST,NORTH,EAST);
   node
     ["historic"="castle"]
-    (48.84393214092,2.3385652297246,48.855115166742,2.3594666277899);
+    (SOUTH,WEST,NORTH,EAST);
   node
     ["historic"="ruins"]
-    (48.84393214092,2.3385652297246,48.855115166742,2.3594666277899);
+    (SOUTH,WEST,NORTH,EAST);
 );
 out ids geom;
-    """)
+    """.replace("SOUTH",south).replace("WEST",west).replace("NORTH",north).replace("EAST",east)
+    print(sports_query)
+    result = api.query(sports_query)
     data = {
             "spots": [
                 {
