@@ -1,17 +1,27 @@
 <template>
-  <div class="wrapper">
-    <img v-show="isLoading" src="/loading.svg" class="loading-icon"/>
-    <div ref="mapContainer" class="map-container"></div>
+  <div class="wrapper relative">
+    <div class="map-container z-0 top-0 left-0" ref="mapContainer" ></div>
+    <div class="spot absolute inset-0 flex items-center justify-center z-1" v-show="showSpotDetail">
+      <Spot @close="showSpotDetail = false" :details="spotDetails"></Spot>
+    </div>
+    <img class="loading-icon absolute bottom-0 left-0 z-1" v-show="isLoading" src="/loading.svg" />
   </div>
 </template>
 
 <script setup>
+import Spot from './Spot.vue'
 import { ref, onMounted, onUnmounted, watch } from 'vue';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
 const isLoading = ref(false);
+
+const showSpotDetail = ref(false)
+const spotDetails = ref()
+
+
 const preloadDist  = 0.03
+const zoomDisplay  = 16
 let lastRequest = {
     lat: 0. ,
     lng: 0. ,
@@ -19,7 +29,7 @@ let lastRequest = {
 const props = defineProps({
   lat: { type: Number, default: 48.84389 },
   lng: { type: Number, default: 2.35133 },
-  zoom: { type: Number, default: 17 },
+  zoom: { type: Number, default: zoomDisplay },
 });
 
 const mapContainer = ref(null);
@@ -32,14 +42,18 @@ const fetchAndUpdateSpots = async (north,east,south,west) => {
     const response = await axios.get('http://localhost:5000/spots/'+north+"/"+east+"/"+south+"/"+west);
     const spots = response.data.spots;
 
-    spots.forEach(spot => { 
-        const marker = L.marker([spot.lat, spot.lon])
+    spots.forEach(spot => {
+      var unkwonIcon = L.icon({
+        iconUrl: 'question.svg',
+        iconSize:     [50, 50],
+      }); 
+        const marker = L.marker([spot.lat, spot.lon], {icon: unkwonIcon})
         .addTo(layerGroup);
         marker.on('click', async () => {
-            console.log('Clicked spot ID:', spot.id);
+            spotDetails.value = "..."
+            showSpotDetail.value = true
             const response = await axios.get('http://localhost:5000/detail/' + spot.id);
-            const details = response.data.details;
-            console.log(details);
+            spotDetails.value = response.data.details;
         });
     });
     
@@ -59,7 +73,8 @@ onMounted(async () => {
 
   map.on('moveend', function() {
     console.log('Moove to', map.getCenter()," from ",lastRequest, " zoom ", map.getZoom());
-    if(map.getZoom() >= 17){
+    if(map.getZoom() >= zoomDisplay){
+      map.addLayer(layerGroup);
       if(Math.abs(map.getCenter().lat - lastRequest.lat)>preloadDist || 
        Math.abs(map.getCenter().lng - lastRequest.lng)>preloadDist){
         lastRequest.lat = map.getCenter().lat
@@ -70,6 +85,8 @@ onMounted(async () => {
                              map.getBounds()._southWest.lng - preloadDist);
 
       }
+    }else{
+      map.removeLayer(layerGroup);
     }
 
 });
@@ -83,20 +100,23 @@ onUnmounted(() => {
 </script>
 
 <style>
-.wrapper{
-  position: relative;
-}
 .map-container { 
   height: 100vh; 
   width: 100%;
-  position: fixed;
 }
 .loading-icon {
   z-index: 1;
   position: absolute;
-  image-rendering: smooth;
-  height: 3.5em;
-  margin-left: 3%;
-  margin-top: 166%;
+  height: 2em;
 }
+/* .wrapper{
+  position: relative;
+  height: 100vh; 
+  width: 100%;
+}
+
+.spot{
+  z-index: 1;
+  position: absolute;
+} */
 </style>

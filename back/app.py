@@ -33,7 +33,7 @@ out skel qt;
 def spots(north,east,south,west):
     sports_query ="""
 [out:json]
-[timeout:30]
+[timeout:60]
 ;
 (
   node
@@ -75,7 +75,6 @@ def spots(north,east,south,west):
 );
 out ids geom;
     """.replace("SOUTH",south).replace("WEST",west).replace("NORTH",north).replace("EAST",east)
-    print(sports_query)
     result = api.query(sports_query)
     data = {
             "spots": [
