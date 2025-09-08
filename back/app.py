@@ -24,42 +24,90 @@ spots_query ="""
 [timeout:60]
 ;
 (
-  node
-    ["tourism"="museum"]
-    (SOUTH,WEST,NORTH,EAST);
-  node
-    ["leisure"="park"]
-    (SOUTH,WEST,NORTH,EAST);
-  node
-    ["leisure"="garden"]
-    (SOUTH,WEST,NORTH,EAST);
-  node
-    ["amenity"="public_building"]
-    (SOUTH,WEST,NORTH,EAST);
-  node
-    ["historic"]
-    (SOUTH,WEST,NORTH,EAST);
-  node
-    ["man_made"="tower"]
-    (SOUTH,WEST,NORTH,EAST);
-  node
-    ["man_made"="monument"]
-    (SOUTH,WEST,NORTH,EAST);
-  node
-    ["amenity"="place_of_worship"]
-    (SOUTH,WEST,NORTH,EAST);
-  node
-    ["amenity"="concert_hall"]
-    (SOUTH,WEST,NORTH,EAST);
-  node
-    ["tourism"="viewpoint"]
-    (SOUTH,WEST,NORTH,EAST);
-  node
-    ["historic"="castle"]
-    (SOUTH,WEST,NORTH,EAST);
-  node
-    ["historic"="ruins"]
-    (SOUTH,WEST,NORTH,EAST);
+// Public Space
+  node["amenity"="townhall"](SOUTH,WEST,NORTH,EAST);
+  way["amenity"="townhall"](SOUTH,WEST,NORTH,EAST);
+  relation["amenity"="townhall"](SOUTH,WEST,NORTH,EAST);
+
+  node["amenity"="courthouse"](SOUTH,WEST,NORTH,EAST);
+  way["amenity"="courthouse"](SOUTH,WEST,NORTH,EAST);
+  relation["amenity"="courthouse"](SOUTH,WEST,NORTH,EAST);
+
+  node["amenity"="marketplace"](SOUTH,WEST,NORTH,EAST);
+  way["amenity"="marketplace"](SOUTH,WEST,NORTH,EAST);
+  relation["amenity"="marketplace"](SOUTH,WEST,NORTH,EAST);
+  
+  node["amenity"="library"](SOUTH,WEST,NORTH,EAST);
+  way["amenity"="library"](SOUTH,WEST,NORTH,EAST);
+  relation["amenity"="library"](SOUTH,WEST,NORTH,EAST);
+  
+  node["leisure"="park"](SOUTH,WEST,NORTH,EAST);
+  way["leisure"="park"](SOUTH,WEST,NORTH,EAST);
+  relation["leisure"="park"](SOUTH,WEST,NORTH,EAST);
+
+// Tourism
+
+  node["tourism"="museum"](SOUTH,WEST,NORTH,EAST);
+  way["tourism"="museum"](SOUTH,WEST,NORTH,EAST);
+  relation["tourism"="museum"](SOUTH,WEST,NORTH,EAST);
+
+  
+  node["tourism"="wilderness_hut"](SOUTH,WEST,NORTH,EAST);
+  way["tourism"="wilderness_hut"](SOUTH,WEST,NORTH,EAST);
+  relation["tourism"="wilderness_hut"](SOUTH,WEST,NORTH,EAST);
+  
+  node["tourism"="alpine_hut"](SOUTH,WEST,NORTH,EAST);
+  way["tourism"="alpine_hut"](SOUTH,WEST,NORTH,EAST);
+  relation["tourism"="alpine_hut"](SOUTH,WEST,NORTH,EAST);
+
+  node["amenity"="place_of_worship"](SOUTH,WEST,NORTH,EAST);
+  way["amenity"="place_of_worship"](SOUTH,WEST,NORTH,EAST);
+  relation["amenity"="place_of_worship"](SOUTH,WEST,NORTH,EAST);
+
+  node["historic"="castle"](SOUTH,WEST,NORTH,EAST);
+  way["historic"="castle"](SOUTH,WEST,NORTH,EAST);
+  relation["historic"="castle"](SOUTH,WEST,NORTH,EAST);
+
+  node["historic"="ruins"](SOUTH,WEST,NORTH,EAST);
+  way["historic"="ruins"](SOUTH,WEST,NORTH,EAST);
+  relation["historic"="ruins"](SOUTH,WEST,NORTH,EAST);
+
+  node["tourism"="viewpoint"](SOUTH,WEST,NORTH,EAST);
+  way["tourism"="viewpoint"](SOUTH,WEST,NORTH,EAST);
+  relation["tourism"="viewpoint"](SOUTH,WEST,NORTH,EAST);
+
+  node["historic"="archaeological_site"](SOUTH,WEST,NORTH,EAST);
+  way["historic"="archaeological_site"](SOUTH,WEST,NORTH,EAST);
+  relation["historic"="archaeological_site"](SOUTH,WEST,NORTH,EAST);
+
+// Natural
+  node["natural"="peak"](SOUTH,WEST,NORTH,EAST);
+  way["natural"="peak"](SOUTH,WEST,NORTH,EAST);
+  relation["natural"="peak"](SOUTH,WEST,NORTH,EAST);
+
+node["natural"="saddle"](SOUTH,WEST,NORTH,EAST);
+  way["natural"="saddle"](SOUTH,WEST,NORTH,EAST);
+  relation["natural"="saddle"](SOUTH,WEST,NORTH,EAST);
+
+  node["natural"="waterfall"](SOUTH,WEST,NORTH,EAST);
+  way["natural"="waterfall"](SOUTH,WEST,NORTH,EAST);
+  relation["natural"="waterfall"](SOUTH,WEST,NORTH,EAST);
+
+  node["natural"="cave_entrance"](SOUTH,WEST,NORTH,EAST);
+  way["natural"="cave_entrance"](SOUTH,WEST,NORTH,EAST);
+  relation["natural"="cave_entrance"](SOUTH,WEST,NORTH,EAST);
+
+  node["natural"="volcano"](SOUTH,WEST,NORTH,EAST);
+  way["natural"="volcano"](SOUTH,WEST,NORTH,EAST);
+  relation["natural"="volcano"](SOUTH,WEST,NORTH,EAST);
+
+  node["natural"="beach"](SOUTH,WEST,NORTH,EAST);
+  way["natural"="beach"](SOUTH,WEST,NORTH,EAST);
+  relation["natural"="beach"](SOUTH,WEST,NORTH,EAST);
+
+  node["natural"="glacier"](SOUTH,WEST,NORTH,EAST);
+  way["natural"="glacier"](SOUTH,WEST,NORTH,EAST);
+  relation["natural"="glacier"](SOUTH,WEST,NORTH,EAST);
 );
 out ids geom;
     """
@@ -100,7 +148,6 @@ def spots(north,east,south,west):
     if not user_id:
         user_id = str(uuid.uuid4())
         mini_db[user_id] = []
-    print(mini_db)
     result = api.query(spots_query.replace("SOUTH",south).replace("WEST",west).replace("NORTH",north).replace("EAST",east))
     data = {
             "spots": [
