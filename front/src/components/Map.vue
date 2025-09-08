@@ -39,20 +39,27 @@ const fetchAndUpdateSpots = async (north,east,south,west) => {
   console.log('Request ', {north,east,south,west});
   isLoading.value = true;
   try {
-    const response = await axios.get('http://localhost:5000/spots/'+north+"/"+east+"/"+south+"/"+west);
+    const response = await axios.get('http://localhost:5000/spots/'+north+"/"+east+"/"+south+"/"+west, {
+       withCredentials: true});
     const spots = response.data.spots;
 
     spots.forEach(spot => {
       var unkwonIcon = L.icon({
         iconUrl: 'question.svg',
         iconSize:     [50, 50],
+      });
+      var discoverIcon = L.icon({
+        iconUrl: 'discovered.svg',
+        iconSize:     [50, 50],
       }); 
-        const marker = L.marker([spot.lat, spot.lon], {icon: unkwonIcon})
+        const marker = L.marker([spot.lat, spot.lon], {icon: spot.discovered ?  discoverIcon : unkwonIcon})
         .addTo(layerGroup);
         marker.on('click', async () => {
+            marker.setIcon(discoverIcon)
             spotDetails.value = "..."
             showSpotDetail.value = true
-            const response = await axios.get('http://localhost:5000/detail/' + spot.id);
+            const response = await axios.get('http://localhost:5000/detail/' + spot.id, {
+              withCredentials: true});
             spotDetails.value = response.data.details;
         });
     });
