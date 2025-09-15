@@ -61,6 +61,7 @@ const fetchAndUpdateSpots = async (north,east,south,west) => {
             const response = await axios.get('http://localhost:5000/detail/' + spot.id, {
               withCredentials: true});
             spotDetails.value = response.data.details;
+            console.log(response.data.details);
         });
     });
     
@@ -79,7 +80,6 @@ onMounted(async () => {
   layerGroup = L.layerGroup().addTo(map);
 
   map.on('moveend', function() {
-    console.log('Moove to', map.getCenter()," from ",lastRequest, " zoom ", map.getZoom());
     if(map.getZoom() >= zoomDisplay){
       map.addLayer(layerGroup);
       if(Math.abs(map.getCenter().lat - lastRequest.lat)>preloadDist || 

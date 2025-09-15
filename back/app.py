@@ -13,6 +13,7 @@ detail_query="""
 [out:json][timeout:25];
 (
   node(NODE_ID);
+  way(NODE_ID);
 );
 out body;
 >;
@@ -109,7 +110,7 @@ node["natural"="saddle"](SOUTH,WEST,NORTH,EAST);
   way["natural"="glacier"](SOUTH,WEST,NORTH,EAST);
   relation["natural"="glacier"](SOUTH,WEST,NORTH,EAST);
 );
-out ids geom;
+out ids geom center;
     """
 
 mini_db = {}
@@ -128,17 +129,17 @@ def detail(id):
     user_id = request.cookies.get('user_id')
     if user_id:
         user_discover_spot(id,user_id)
-    print(mini_db)
     result = api.query(detail_query.replace("NODE_ID",id))
-    if len(result.nodes) != 0 : 
+    if len(result.nodes) != 0 and len(result.nodes[0].tags) != 0: 
       return { "details":  result.nodes[0].tags }
+    elif len(result.ways) != 0 and len(result.ways[0].tags) != 0:
+        return { "details":  result.ways[0].tags }
     else:
         return {}
 
 def is_spot_discovered(id,user_id):
     if user_id in mini_db:
         if id in mini_db[user_id]:
-            print("        {}".format(id))
             return True
     return False
 
@@ -158,7 +159,15 @@ def spots(north,east,south,west):
                     "discovered": is_spot_discovered(str(element.id),str(user_id))
                 }
                 for element in result.nodes
-            ]
+            ] + [
+                {
+                    "id": element.id,
+                    "lat": element.center_lat,
+                    "lon": element.center_lon,
+                    "discovered": is_spot_discovered(str(element.id), str(user_id))
+                }
+                for element in result.ways
+                ]
         }
     resp = make_response(jsonify(data))
     resp.set_cookie('user_id', user_id, max_age=60*60*24*30)
